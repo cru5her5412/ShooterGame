@@ -1,54 +1,50 @@
+setupDone=false
 function setup() {
+  preload()
   createCanvas(1400, 1400);
-  R = [1, 2]
-  e = width/2
+  a = width/2
   b = height/2
-  dy = 0
-  dx = 0
-  x = -100
-  y = -100
-  X = x
-  Y = y
   c = 0
-  aa = width + 50
-  bb = -50
-  cc = width + 50
-  dd = height + 50
   ScoreIncrease = false
   Score = 0
-  projectileCounter = 0
   PlayerDead = false
   EnemyADead = false
   EnemyBDead = false
-  dy = 0
-  dx = 0
-  dyi = 0
-  dxi = 0
-  dyii = 0
-  dxii = 0
-  x = 0
-  y = 0
-  xi = 0
-  yi = 0
-  xii = 0
-  yii = 0
   c = 0
-  Projectile1Active = false
-  Projectile2Active = false
-  Projectile3Active = false
-  rectMode(CENTER)
-  frameRate(30)
-  background(c)
-  textSize(200)
-  textAlign(CENTER)
-  const enemy = {
-    enemyXCoord:[9],
-    enemyYCoord:[9],
-    enemyHP:[9],
-    enemyMoveSpeed:[7],
+  rectMode(CENTER);
+  imageMode(CENTER);
+  frameRate(30);
+  background(c);
+  textSize(200);
+  textAlign(CENTER);
+    enemy = {
+    enemyXCoord:[width + 50, width + 50, -50, -50],
+    enemyYCoord:[-50, height + 50, -50, height + 50],
+    enemyHP:[9, 9,9, 9],
+    enemyMoveSpeed:[5,5,5,5],
+    enemyImageUsed:[0,1,2, 3]
   }
+   projectile = {
+    projectileXCoord:[],
+    projectileYCoord:[],
+    projectileDX:[],
+    projectileDY:[],
+    projectileDamage:[],
+  }
+  setupDone=true
 }
-
+function preload(){
+  enemy1= loadImage("./Images/Enemy1.png");
+  enemy2= loadImage("./Images/Enemy2.png");
+  enemy3= loadImage("./Images/Enemy3.png");
+  enemy4= loadImage("./Images/Enemy4.png");
+  playerImage = loadImage("./Images/Player.png")
+  bullet=loadImage("./Images/Bullet.png")
+  bossImage=loadImage("./Images/Boss.png")
+  bossBulletImage=loadImage("./Images/BossBullet.png")
+  reticle=loadImage("./Images/Reticle.png")
+  ammoBar=loadImage("./Images/AmmoBar.png")
+}
 
 
 function draw() {
@@ -58,56 +54,29 @@ function draw() {
   text("Score: " + Score, 100, 100)
   textSize(200)
   limitToScreen()
-  x = constrain(x, -1, width + 1)
-  y = constrain(y, -1, height + 1)
-  e = constrain(e, 0, width)
-  b = constrain(b, 0, height)
-  aa = constrain(aa, -50, height + 50)
-  bb = constrain(bb, -50, height + 50)
-  cc = constrain(cc, -50, height + 50)
-  dd = constrain(dd, -50, height + 50)
-  if(second() % 100 === 0){
-  }
+  displayEnemy()
+  enemyTrackPlayer()
+ // image(enemy1, 300,300 )
+  // if(second() % 100 === 0){
+  // }
   x = x + dx / 3
   y = y + dy / 3
-  xi = xi + dxi / 3
-  yi = yi + dyi / 3
-  xii = xii + dxii / 3
-  yii = yii + dyii / 3
-  if (EnemyADead === false) {
-    fill(255, 0, 0)
-    rect(aa, bb, 100, 100)
-    fill(255)
-  }
-  if (EnemyBDead === false) {
-    fill(0, 255, 0)
-    rect(cc, dd, 100, 100)
-    fill(255)
-  }
-
-  if (EnemyBDead === true) {
-    EnemyBDead = false
-    
-  }
-  if (EnemyADead === true) {
-    EnemyADead = false
-    
-  }
+  
 
   r = random(0, 1)
   Character()
-  EdgeCheck(x, y, 1)
-  EdgeCheck(xi, yi, 2)
-  EdgeCheck(xii, yii, 3)
-  enemyTracking()
-  killDetection(x, y, dy, dx, 1, aa, bb, 1)
-  killDetection(xi, yi, dyi, dxi, 2, aa, bb, 1)
-  killDetection(xii, yii, dyii, dxii, 3, aa, bb, 1)
-  killDetection(x, y, dy, dx, 1, cc, dd, 2)
-  killDetection(xi, yi, dyi, dxi, 2, cc, dd, 2)
-  killDetection(xii, yii, dyii, dxii, 3, cc, dd, 2)
-  deathDetection(e, b, aa, bb)
-  deathDetection(e, b, cc, dd)
+  // EdgeCheck(x, y, 1)
+  // EdgeCheck(xi, yi, 2)
+  // EdgeCheck(xii, yii, 3)
+  projectileLogic()
+  // killDetection(x, y, dy, dx, 1, enemyXCoord, enemyYCoord, 1)
+  // killDetection(xi, yi, dyi, dxi, 2, enemyXCoord, enemyYCoord, 1)
+  // killDetection(xii, yii, dyii, dxii, 3, enemyXCoord, enemyYCoord, 1)
+  // killDetection(x, y, dy, dx, 1, cc, dd, 2)
+  // killDetection(xi, yi, dyi, dxi, 2, cc, dd, 2)
+  // killDetection(xii, yii, dyii, dxii, 3, cc, dd, 2)
+  deathDetection()
+
   if (PlayerDead === false){
   if (Projectile1Active === true) {
     rect(x, y, 50, 50)
@@ -120,38 +89,48 @@ function draw() {
   }
 }
 }
-
-function mousePressed() {
-  if (mouseButton === LEFT) {
-    projectileCounter = projectileCounter + 1
-    if (projectileCounter > 3) {
-      projectileCounter = 1
-    }
-    if (projectileCounter === 1) {
-      Projectile1Active = true
-      dy = (mouseY - b) / 10
-      dx = (mouseX - e) / 10
-      x = e
-      y = b
-    }
-    if (projectileCounter === 2) {
-      Projectile2Active = true
-      dyi = (mouseY - b) / 10
-      dxi = (mouseX - e) / 10
-      xi = e
-      yi = b
-    }
-    if (projectileCounter === 3) {
-      Projectile3Active = true
-      dyii = (mouseY - b) / 10
-      dxii = (mouseX - e) / 10
-      xii = e
-      yii = b
-    }
+function projectileLogic(){
+  for(i=0;i<projectile.projectileXCoord.length;i++){
+image(bullet,projectile.projectileXCoord[i],projectile.projectileYCoord[i]);
+    if(projectile.projectileDX[i]!=0||projectile.projectileDY[i]!=0){projectile.projectileXCoord[i]=projectile.projectileXCoord[i] + projectile.projectileDX[i];
+    projectile.projectileYCoord[i]=projectile.projectileYCoord[i] + projectile.projectileDY[i];
   }
+  }
+}
+function mousePressed() {
+  if(setupDone===true){
+  if (mouseButton === LEFT) {
+    projectile.projectileXCoord.push(a);
+    projectile.projectileYCoord.push(b);
+    projectile.projectileDX.push((mouseX-a)/10);
+    projectile.projectileDY.push((mouseY-b)/10);
+    projectile.projectileDamage.push(10);
+    }
+//     if (projectileCounter === 1) {
+//       Projectile1Active = true
+//       dy = (mouseY - b) / 10
+//       dx = (mouseX - a) / 10
+//       x = a
+//       y = b
+//     }
+//     if (projectileCounter === 2) {
+//       Projectile2Active = true
+//       dyi = (mouseY - b) / 10
+//       dxi = (mouseX - a) / 10
+//       xi = a
+//       yi = b
+//     }
+//     if (projectileCounter === 3) {
+//       Projectile3Active = true
+//       dyii = (mouseY - b) / 10
+//       dxii = (mouseX - a) / 10
+//       xii = a
+//       yii = b
+//     }
+//   }
 
 }
-
+}
 function EdgeCheck(X, Y, u) {
   if (X > width) {
 
@@ -216,10 +195,10 @@ function EdgeCheck(X, Y, u) {
 
 function Character() {
   if (keyIsDown(65)) {
-    e = e - 10
+    a = a - 10
   }
   if (keyIsDown(68)) {
-    e = e + 10
+    a = a + 10
   }
   if (keyIsDown(83)) {
     b = b + 10
@@ -228,88 +207,29 @@ function Character() {
     b = b - 10
   }
   if (PlayerDead === false) {
-    fill(0, 100, 255)
-    rect(e, b, 100, 100)
-    fill(255)
-
+    image(playerImage, a,b);
   }
 
 }
 
 
-
-function sideEnemiesRespawn() {
-
-  dd = random(-50, width + 50)
-  if (r < 0.5){
-  cc = -50
-  }
-  if (r > 0.5){
-   cc = width + 50 
-  }
-  EnemyBDead = false
-}
-
-
-function topEnemiesRespawn() {
-
-  aa = random(-50, width + 50)
-  if (r < 0.5){
-  bb = -50
-  }
-  if (r > 0.5){
-   bb = height + 50 
-  }
-  
-  EnemyADead = false
-}
-
-
-function enemyTracking() {
-  if (e < aa) {
-    aa = aa - random(1, 8)
-  }
-  if (e > aa) {
-    aa = aa + random(1, 8)
-  }
-  if (b < bb) {
-    bb = bb - random(1, 8)
-  }
-  if (b > bb) {
-    bb = bb + random(1, 8)
-  }
-  if (e < cc) {
-    cc = cc - random(1, 8)
-  }
-  if (e > cc) {
-    cc = cc + random(1, 8)
-  }
-  if (b < dd) {
-    dd = dd - random(1, 8)
-  }
-  if (b > dd) {
-    dd = dd + random(1, 8)
-  }
-
-}
-
-function deathDetection(X, Y, XX, YY) {
-  zz = XX - 50
-  yy = YY - 50
-
+function deathDetection() {
+  for(i=0;i<enemy.enemyXCoord.length;i++){
+    xx=enemy.enemyXCoord[i]-50;
+    yy=enemy.enemyYCoord[i]-50;
   if (PlayerDead === false) {
-    for (i = 0; i < 100; i++) {
-      if ((zz < X + 50) && (zz > X - 50)) {
-        if ((yy < Y + 50) && (yy > Y - 50)) {
+    for (j = 0; j < 100; j++) {
+      if ((xx < a + 50) && (xx > a - 50)) {
+        if ((yy < b + 50) && (yy > b - 50)) {
           PlayerDead = true
           
         }
       }
-      zz = zz + 1
+      xx = xx + 1
       yy = yy + 1
     }
   }
-
+  }
 
   if (PlayerDead === true) {
     noLoop()
@@ -318,7 +238,7 @@ function deathDetection(X, Y, XX, YY) {
     stroke(180, 20, 60)
     fill(150, 20, 40)
     text("You Died", width / 2, height / 2)
-
+    
   }
 }
 
@@ -559,10 +479,53 @@ function killDetection(X, Y, dY, dX, u, XX, YY, EnemyNo) {
 function limitToScreen(){
   x = constrain(x, -1, width + 1)
   y = constrain(y, -1, height + 1)
-  e = constrain(e, 0, width)
+  a = constrain(a, 0, width)
   b = constrain(b, 0, height)
-  aa = constrain(aa, -50, height + 50)
-  bb = constrain(bb, -50, height + 50)
-  cc = constrain(cc, -50, height + 50)
-  dd = constrain(dd, -50, height + 50)
+}
+function keyPressed(){
+  
+}
+function displayEnemy(){
+  for(i=0;i<enemy.enemyXCoord.length;i++){
+    enemy.enemyXCoord[i] = constrain(enemy.enemyXCoord[i], -50, height + 50)
+    enemy.enemyYCoord[i] = constrain(enemy.enemyYCoord[i], -50, height + 50)
+    if(enemy.enemyHP[i]>0){
+      switch(enemy.enemyImageUsed[i]){
+        case 0:
+          image(enemy1, enemy.enemyXCoord[i],enemy.enemyYCoord[i], 100, 100);
+          break;
+        case 1:
+          image(enemy2, enemy.enemyXCoord[i],enemy.enemyYCoord[i], 100, 100);
+          break;
+        case 3:
+          image(enemy3, enemy.enemyXCoord[i],enemy.enemyYCoord[i], 100, 100);
+          break;
+        case 4:
+          image(enemy4, enemy.enemyXCoord[i],enemy.enemyYCoord[i], 100, 100);
+          break;
+          default:
+          image(enemy1, enemy.enemyXCoord[i],enemy.enemyYCoord[i], 100, 100);
+          break;
+    }
+  }
+}
+}
+function enemyTrackPlayer(){
+  for(i=0;i<enemy.enemyXCoord.length;i++){
+  if(enemy.enemyHP[i]>0){
+    if (a < enemy.enemyXCoord[i]) {
+    enemy.enemyXCoord[i] = enemy.enemyXCoord[i] - enemy.enemyMoveSpeed[i]
+  }
+    if (a > enemy.enemyXCoord[i]) {
+    enemy.enemyXCoord[i] = enemy.enemyXCoord[i] + enemy.enemyMoveSpeed[i]
+  }
+
+    if (b < enemy.enemyYCoord[i]) {
+    enemy.enemyYCoord[i] = enemy.enemyYCoord[i] - enemy.enemyMoveSpeed[i]
+  }
+    if (b > enemy.enemyYCoord[i]) {
+    enemy.enemyYCoord[i] = enemy.enemyYCoord[i] + enemy.enemyMoveSpeed[i]
+  }
+  }
+  }
 }
