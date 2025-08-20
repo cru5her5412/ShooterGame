@@ -47,7 +47,6 @@ function preload() {
 }
 
 function draw() {
-  //clear()
   background(c);
   textSize(20);
   text("Score: " + Score, 100, 100);
@@ -55,20 +54,8 @@ function draw() {
   limitToScreen();
   displayEnemy();
   enemyTrackPlayer();
-  // image(enemy1, 300,300 )
-  // if(second() % 100 === 0){
-  // }
   Character();
-  // EdgeCheck(x, y, 1)
-  // EdgeCheck(xi, yi, 2)
-  // EdgeCheck(xii, yii, 3)
   projectileLogic();
-  // killDetection(x, y, dy, dx, 1, enemyXCoord, enemyYCoord, 1)
-  // killDetection(xi, yi, dyi, dxi, 2, enemyXCoord, enemyYCoord, 1)
-  // killDetection(xii, yii, dyii, dxii, 3, enemyXCoord, enemyYCoord, 1)
-  // killDetection(x, y, dy, dx, 1, cc, dd, 2)
-  // killDetection(xi, yi, dyi, dxi, 2, cc, dd, 2)
-  // killDetection(xii, yii, dyii, dxii, 3, cc, dd, 2)
   deathDetection();
 }
 function projectileLogic() {
@@ -135,7 +122,6 @@ function Character() {
   if (PlayerDead === false) {
     image(playerImage, a, b);
   }
-  false();
 }
 
 function deathDetection() {
@@ -161,249 +147,56 @@ function deathDetection() {
     background(c);
     stroke(180, 20, 60);
     fill(150, 20, 40);
-    text("You Died", width / 2, height / 2);
+    text(`You Died`, width / 2, height / 2);
   }
 }
 
-function killDetection(X, Y, dY, dX, u, XX, YY, EnemyNo) {
-  if (EnemyADead === false || EnemyBDead === false) {
-    ss = XX - 50;
-    tt = YY - 50;
-    for (i = 0; i < 100; i++) {
-      if (ss < X + 25 && ss > X - 25) {
-        if (tt < Y + 25 && tt > Y - 25) {
-          if (dY < 0 && dX < 0) {
-            if (u === 1) {
-              dy = 0;
-              dx = 0;
-              x = 0;
-              y = 0;
-              Projectile1Active = false;
-              if (EnemyNo === 1) {
-                EnemyADead = true;
-                topEnemiesRespawn();
-                ScoreIncrease = true;
-              }
-              if (EnemyNo === 2) {
-                EnemyBDead = true;
-                sideEnemiesRespawn();
-                ScoreIncrease = true;
-              }
-            }
-            if (u === 2) {
-              dyi = 0;
-              dxi = 0;
-              xi = 0;
-              yi = 0;
-              Projectile2Active = false;
-              if (EnemyNo === 1) {
-                EnemyADead = true;
-                topEnemiesRespawn();
-                Score = Score + 1;
-              }
-              if (EnemyNo === 2) {
-                EnemyBDead = true;
-                sideEnemiesRespawn();
-                ScoreIncrease = true;
-              }
-            }
-            if (u === 3) {
-              dxii = 0;
-              dyii = 0;
-              xii = 0;
-              yii = 0;
-              Projectile3Active = false;
-              if (EnemyNo === 1) {
-                EnemyADead = true;
-                topEnemiesRespawn();
-                ScoreIncrease = true;
-              }
-              if (EnemyNo === 2) {
-                EnemyBDead = true;
-                sideEnemiesRespawn();
-                ScoreIncrease = true;
-              }
-            }
-          }
+function killDetection() {
+  for (i = 0; i < enemy.enemyXCoord.length; i++) {
+    if (enemy.enemyHP[i] === false) {
+      x = enemy.enemyXCoord[i] - 50;
+      y = enemy.enemyYCoord[i] - 50;
+      for (counter = 0; counter < 100; counter++) {
+        for (j = 0; j < projectile.projectileXCoord.length; j++)
+          if (
+            x < projectile.projectileXCoord[j] + 25 &&
+            x > projectile.projectileXCoord[j] - 25
+          ) {
+            if (
+              y < projectile.projectileYCoord[j] + 25 &&
+              y > projectile.projectileYCoord[j] - 25
+            ) {
+              projectile.projectileXCoord[j].splice(j, 1);
+              projectile.projectileYCoord[j].splice(j, 1);
+              enemy.enemyHP[i] =
+                enemy.enemyHP[i] - projectile.projectileDamage[j];
+              enemyRespawn();
+              ScoreIncrease = true;
 
-          if (dY > 0 && dX < 0) {
-            if (u === 1) {
-              dy = 0;
-              dx = 0;
-              x = 0;
-              y = 0;
-              Projectile1Active = false;
-              if (EnemyNo === 1) {
-                EnemyADead = true;
-                topEnemiesRespawn();
-                ScoreIncrease = true;
-              }
-              if (EnemyNo === 2) {
-                EnemyBDead = true;
-                sideEnemiesRespawn();
-                ScoreIncrease = true;
-              }
-            }
-            if (u === 2) {
-              dyi = 0;
-              dxi = 0;
-              xi = 0;
-              yi = 0;
-              Projectile2Active = false;
-              if (EnemyNo === 1) {
-                EnemyADead = true;
-                topEnemiesRespawn();
-                ScoreIncrease = true;
-              }
-              if (EnemyNo === 2) {
-                EnemyBDead = true;
-                sideEnemiesRespawn();
-                ScoreIncrease = true;
-              }
-            }
-            if (u === 3) {
-              dxii = 0;
-              dyii = 0;
-              xii = 0;
-              yii = 0;
-              Projectile3Active = false;
-              if (EnemyNo === 1) {
-                EnemyADead = true;
-                topEnemiesRespawn();
-                ScoreIncrease = true;
-              }
-              if (EnemyNo === 2) {
-                EnemyBDead = true;
-                sideEnemiesRespawn();
-                ScoreIncrease = true;
-              }
+              x = x + 1;
+              y = y + 1;
             }
           }
-
-          if (dY > 0 && dX > 0) {
-            if (u === 1) {
-              dy = 0;
-              dx = 0;
-              x = 0;
-              y = 0;
-              Projectile1Active = false;
-              if (EnemyNo === 1) {
-                EnemyADead = true;
-                topEnemiesRespawn();
-                ScoreIncrease = true;
-              }
-              if (EnemyNo === 2) {
-                EnemyBDead = true;
-                sideEnemiesRespawn();
-                ScoreIncrease = true;
-              }
-            }
-            if (u === 2) {
-              dyi = 0;
-              dxi = 0;
-              xi = 0;
-              yi = 0;
-              Projectile2Active = false;
-              if (EnemyNo === 1) {
-                EnemyADead = true;
-                topEnemiesRespawn();
-                ScoreIncrease = true;
-              }
-              if (EnemyNo === 2) {
-                EnemyBDead = true;
-                sideEnemiesRespawn();
-                ScoreIncrease = true;
-              }
-            }
-            if (u === 3) {
-              dxii = 0;
-              dyii = 0;
-              xii = 0;
-              yii = 0;
-              Projectile3Active = false;
-              if (EnemyNo === 1) {
-                EnemyADead = true;
-                topEnemiesRespawn();
-                ScoreIncrease = true;
-              }
-              if (EnemyNo === 2) {
-                EnemyBDead = true;
-                sideEnemiesRespawn();
-                ScoreIncrease = true;
-              }
-            }
-          }
-          if (dY < 0 && dX > 0) {
-            if (u === 1) {
-              dy = 0;
-              dx = 0;
-              x = 0;
-              y = 0;
-              Projectile1Active = false;
-              if (EnemyNo === 1) {
-                EnemyADead = true;
-                topEnemiesRespawn();
-                ScoreIncrease = true;
-              }
-              if (EnemyNo === 2) {
-                EnemyBDead = true;
-                sideEnemiesRespawn();
-                ScoreIncrease = true;
-              }
-            }
-            if (u === 2) {
-              dyi = 0;
-              dxi = 0;
-              xi = 0;
-              yi = 0;
-              Projectile2Active = false;
-              if (EnemyNo === 1) {
-                EnemyADead = true;
-                topEnemiesRespawn();
-                ScoreIncrease = true;
-              }
-              if (EnemyNo === 2) {
-                EnemyBDead = true;
-                sideEnemiesRespawn();
-                ScoreIncrease = true;
-              }
-            }
-            if (u === 3) {
-              dxii = 0;
-              dyii = 0;
-              xii = 0;
-              yii = 0;
-              Projectile3Active = false;
-              if (EnemyNo === 1) {
-                EnemyADead = true;
-                topEnemiesRespawn();
-                ScoreIncrease = true;
-              }
-              if (EnemyNo === 2) {
-                EnemyBDead = true;
-                sideEnemiesRespawn();
-                ScoreIncrease = true;
-              }
-            }
-          }
+        if (ScoreIncrease === true) {
+          Score = Score + 1;
+          ScoreIncrease = false;
         }
       }
-      ss = ss + 1;
-      tt = tt + 1;
     }
-  }
-  if (ScoreIncrease === true) {
-    Score = Score + 1;
-    ScoreIncrease = false;
   }
 }
 function limitToScreen() {
-  x = constrain(x, -1, width + 1);
-  y = constrain(y, -1, height + 1);
   a = constrain(a, 0, width);
   b = constrain(b, 0, height);
 }
-function keyPressed() {}
+
+function keyPressed() {
+  if (key === "r") {
+    setup();
+    loop();
+  }
+}
+
 function displayEnemy() {
   for (i = 0; i < enemy.enemyXCoord.length; i++) {
     enemy.enemyXCoord[i] = constrain(enemy.enemyXCoord[i], -50, height + 50);
@@ -429,6 +222,7 @@ function displayEnemy() {
     }
   }
 }
+
 function enemyTrackPlayer() {
   for (i = 0; i < enemy.enemyXCoord.length; i++) {
     if (enemy.enemyHP[i] > 0) {
@@ -448,3 +242,4 @@ function enemyTrackPlayer() {
     }
   }
 }
+function enemyRespawn() {}
