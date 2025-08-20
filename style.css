@@ -4,5 +4,6 @@ body {
   padding: 0;
 }
 canvas {
-  display: block;
+  display: flex;
+  justify-content: center;
 }
