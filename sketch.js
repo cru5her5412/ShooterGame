@@ -53,7 +53,7 @@ function draw() {
   projectileLogic();
   EdgeCheck();
   killDetection();
-  //deathDetection();
+  deathDetection();
   enemyFunctions();
 }
 function scoreText() {
