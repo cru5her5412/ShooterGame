@@ -197,9 +197,6 @@ function killDetection() {
                 enemy.enemyHP[i] - projectile.projectileDamage[j];
 
               ScoreIncrease = true;
-
-              x = x + 1;
-              y = y + 1;
             }
           }
           if (ScoreIncrease === true) {
@@ -207,6 +204,8 @@ function killDetection() {
             ScoreIncrease = false;
           }
         }
+        x = x + 1;
+        y = y + 1;
       }
     }
   }
