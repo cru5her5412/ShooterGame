@@ -93,6 +93,29 @@ function mousePressed() {
       projectile.projectileYCoord.push(b);
       projectile.projectileDX.push((mouseX - a) / 10);
       projectile.projectileDY.push((mouseY - b) / 10);
+      //  X=mouseX-a
+      //  Y=mouseY-b
+      // if(Y<=0&&X<=0){
+      //   angle=acos(X/sqrt(X**2+Y**2))
+      // }
+      // else{
+      // angle=acos(X/sqrt(X**2+Y**2))
+      // }
+      // if(X>0){
+      //   dx=10*cos(angle)
+      // }
+      // else if(X<0){
+      //   dx=10*cos(angle)
+      // }
+      // if(Y>0){
+      //   dy=10*sin(angle)
+      // }
+      // else if(Y<0){
+      //   dy=-10*sin(angle)
+      // }
+
+      // proj.dx.push(dx)
+      // proj.dy.push(dy)
       projectile.projectileDamage.push(10);
     }
   }
@@ -225,8 +248,8 @@ function keyPressed() {
 
 function displayEnemy() {
   for (i = 0; i < enemy.enemyXCoord.length; i++) {
-    enemy.enemyXCoord[i] = constrain(enemy.enemyXCoord[i], -50, height + 50);
-    enemy.enemyYCoord[i] = constrain(enemy.enemyYCoord[i], -50, height + 50);
+    // enemy.enemyXCoord[i] = constrain(enemy.enemyXCoord[i], -50, height + 50);
+    // enemy.enemyYCoord[i] = constrain(enemy.enemyYCoord[i], -50, height + 50);
     if (enemy.enemyHP[i] > 0 && PlayerDead === false) {
       switch (enemy.enemyImageUsed[i]) {
         case 0:
@@ -297,6 +320,7 @@ function enemyDie() {
       enemy.enemyYCoord.splice(index, 1);
       enemy.enemyHP.splice(index, 1);
       enemy.enemyMoveSpeed.splice(index, 1);
+      enemy.enemyImageUsed.splice(index, 1);
     }
   });
   //
