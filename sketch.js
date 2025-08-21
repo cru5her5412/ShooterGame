@@ -2,7 +2,8 @@ setupDone = false;
 function setup() {
   preload();
   //doc = document.querySelector("html"); //selects whole document
-  createCanvas(1400, 1400);
+  createCanvas(2000, 1000);
+  frameCount = 0;
   a = width / 2;
   b = height / 2;
   ScoreIncrease = false;
@@ -57,7 +58,7 @@ function draw() {
 }
 function scoreText() {
   textSize(20);
-  text("Score: " + Score, 100, 100);
+  text(`Score: ${Score}`, 100, 100);
   textSize(200);
 }
 function enemyFunctions() {
@@ -90,8 +91,22 @@ function mousePressed() {
     if (mouseButton === LEFT) {
       projectile.projectileXCoord.push(a);
       projectile.projectileYCoord.push(b);
-      projectile.projectileDX.push((mouseX - a) / 10);
-      projectile.projectileDY.push((mouseY - b) / 10);
+      X = mouseX - a;
+      Y = mouseY - b;
+      angle = cos(X / sqrt(X ** 2 + Y ** 2));
+      if (X > 0) {
+        dx = 10 * cos(angle);
+      } else if (X < 0) {
+        dx = -10 * cos(angle);
+      }
+      if (Y > 0) {
+        dy = 10 * sin(angle);
+      } else if (Y < 0) {
+        dy = -10 * sin(angle);
+      }
+
+      proj.dx.push(dx);
+      proj.dy.push(dy);
       projectile.projectileDamage.push(10);
     }
   }
@@ -280,8 +295,8 @@ function enemyRespawn() {
   } else if (UorD > 0.5) {
     newY = height + 50;
   }
-  mill = millis();
-  if (mill % 20 === 0) {
+
+  if (frameCount % 300 === 0) {
     enemy.enemyXCoord.push(newX);
     enemy.enemyYCoord.push(newY);
     enemy.enemyHP.push(9);
