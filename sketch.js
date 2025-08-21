@@ -91,22 +91,8 @@ function mousePressed() {
     if (mouseButton === LEFT) {
       projectile.projectileXCoord.push(a);
       projectile.projectileYCoord.push(b);
-      X = mouseX - a;
-      Y = mouseY - b;
-      angle = cos(X / sqrt(X ** 2 + Y ** 2));
-      if (X > 0) {
-        dx = 10 * cos(angle);
-      } else if (X < 0) {
-        dx = -10 * cos(angle);
-      }
-      if (Y > 0) {
-        dy = 10 * sin(angle);
-      } else if (Y < 0) {
-        dy = -10 * sin(angle);
-      }
-
-      proj.dx.push(dx);
-      proj.dy.push(dy);
+      projectile.projectileDX.push((mouseX - a) / 10);
+      projectile.projectileDY.push((mouseY - b) / 10);
       projectile.projectileDamage.push(10);
     }
   }
